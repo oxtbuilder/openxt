@@ -11,21 +11,18 @@ if ($LastExitCode -ne 0) {
 }
 
 # Install the build daemon
-mkdir C:\windbuildd
+$winbuildd_exists = Test-Path("C:\winbuildd")
+if ($winbuildd_exists -ne $True) {
+  mkdir C:\windbuildd
+}
 xcopy BuildDaemon\winbuild.cfg C:\winbuildd\winbuild.cfg
-xcopy BuildDaemon\windbuildd C:\windbuildd\winbuildd
+xcopy BuildDaemon\winbuildd.py C:\winbuildd\winbuildd.py
 
 # Auto-start the build daemon
 $startmenu = [Environment]::GetFolderPath("StartMenu")
-$startup = $($startmenu)\Programs\Startup
+$startup = "$($startmenu)\Programs\Startup"
 $startupExists = Test-Path $($startup)
-if ($startupExists -ne True) {
+if ($startupExists -ne $True) {
   mkdir $startup
 }
-xcopy BuildDaemon\winbuildd.bat $($startup)\winbuildd.bat
-
-goto :EOF
-
-:error
-echo Command failed with error %errorlevel%.
-exit /b %errorlevel%
+xcopy BuildDaemon\winbuildd.bat "$($startup)\winbuildd.bat"
